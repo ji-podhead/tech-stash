@@ -171,24 +171,24 @@ now that we have our color, char and alpha array, we pass it to our render funct
 
 ### Summary
 
-#### Initialization
- The algorithm initializes a 2D array (matrix) with a fixed number of columns and rows. Each cell in the matrix represents a character on the screen.
+***Initialization***
+ - The algorithm initializes a 2D array (matrix) with a fixed number of columns and rows. Each cell in the matrix represents a character on the screen.
 
 
-#### Character Generation: 
- The algorithm generates a random character for each cell in the matrix. The characters are chosen from a set of printable ASCII characters.
+***Character Generation:***
+  - The algorithm generates a random character for each cell in the matrix. The characters are chosen from a set of printable ASCII characters.
 
-#### Color Generation:
-The algorithm generates a random color for each character in the matrix. The colors are chosen from a set of possible colors.
+***Color Generation***
+ - The algorithm generates a random color for each character in the matrix. The colors are chosen from a set of possible colors.
 
-#### Render Loop
-The algorithm enters a render loop, where it updates the characters, colors, and alpha values for each cell in the matrix.
+***Render Loop***
+- The algorithm enters a render loop, where it updates the characters, colors, and alpha values for each cell in the matrix.
 
-#### Character Update
-The algorithm updates the character for each cell in the matrix based on a random speed value. The speed value determines how often the character is updated
+***Character Update***
+- The algorithm updates the character for each cell in the matrix based on a random speed value. The speed value determines how often the character is updated
 
-#### Rendering
-The algorithm renders the updated characters, colors, and alpha values onto the screen using a canvas element.
+***Rendering***
+- The algorithm renders the updated characters, colors, and alpha values onto the screen using a canvas element.
 
 ### Thats it!
 My algo is not perfect, im still rendering chars that are not even visible, so you could technically use the ofset value to alter the logic in order to avoid that.
