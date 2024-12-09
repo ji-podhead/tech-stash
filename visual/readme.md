@@ -1,11 +1,18 @@
 # Matrix Screensaver using HTML and JS only - *the simplest way possible*
+
+<div align="center">
+  <h3><a href="https://github.com/ji-podhead/tech-stash/blob/main/visual/matrix.html">
+    Full Code is on my git
+  </a></h3>
+</div>
+
 ![grafik](https://github.com/user-attachments/assets/2af1127d-f9c3-4504-a8f6-23bb258aac42)
 
 When I created my CV in plain HTML(def. cool) i wanted to implement a little EasterEgg, so i thought of hiding some code to trick people and give it a little spice.
 First i just wanted to hide a little decoded alert and just for fun i tried to recreate the matrix screen saver.
 
 I asked AI to recreate it, after i created some pseudocode. 
-- AI came up with some super weird algos and 3-4 linked list. To my suprise it actually worked xD, but it was doomed code from hell, so i wanted to do it better, but i kept the fancy canvas render technique.
+- AI came up with some super weird algos and 3-4 linked list. To my suprise it actually worked xD, but it was doomed code from hell, so i wanted to do it better, but i kept the fancy canvas render technique (canvas api).
 
 ## Heres my ATTEMPT!
 
@@ -53,7 +60,7 @@ I asked AI to recreate it, after i created some pseudocode.
 ### The render loop
 - just like with particle systems, shaders or any other thing that gets animated, we need to have a loop to calculate the color, transformation, scale, rotation...
 - the human eye sees 60 fps max, but 30 fps is fine ( any android game runs on 30 fps)
-- based  om some rules we define, we move, respawn and colorize the chars in our render loop.
+- based  on some rules we define, we move, respawn and colorize the chars in our render loop.
 
 ```js
  function calc() {
@@ -161,6 +168,27 @@ now that we have our color, char and alpha array, we pass it to our render funct
         ctx.textAlign = 'left';
         }
 ```
+
+### Summary
+
+#### Initialization
+ The algorithm initializes a 2D array (matrix) with a fixed number of columns and rows. Each cell in the matrix represents a character on the screen.
+
+
+#### Character Generation: 
+ The algorithm generates a random character for each cell in the matrix. The characters are chosen from a set of printable ASCII characters.
+
+#### Color Generation:
+The algorithm generates a random color for each character in the matrix. The colors are chosen from a set of possible colors.
+
+#### Render Loop
+The algorithm enters a render loop, where it updates the characters, colors, and alpha values for each cell in the matrix.
+
+#### Character Update
+The algorithm updates the character for each cell in the matrix based on a random speed value. The speed value determines how often the character is updated
+
+#### Rendering
+The algorithm renders the updated characters, colors, and alpha values onto the screen using a canvas element.
 
 ### Thats it!
 My algo is not perfect, im still rendering chars that are not even visible, so you could technically use the ofset value to alter the logic in order to avoid that.
