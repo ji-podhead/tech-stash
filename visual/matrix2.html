@@ -1,0 +1,142 @@
+  <div  style=" width:100%; height:100%;font-family: Georgia, serif;">
+    <canvas id="matrix-container" style="z-index: 1; position: absolute;" width="768" height="1024"></canvas>
+
+    <div style="z-index: 0; position: relative; width: 768px; height:1024px; justify-content: center; ">
+    </div>
+<script type="text/javascript">
+    function tempAlert(msg,duration)
+        {
+        var el = document.createElement("div");
+        el.setAttribute("style","position:absolute;top:80%;left:20%; margin:20px; padding:20px; background:white ");
+        el.innerHTML = `
+        <p>Bitte auf Vollbild klicken für die beste Erfahrung!</p>
+        <button id="full-screen-button">Vollbild</button>
+        `;
+        setTimeout(function(){
+        el.parentNode.removeChild(el);
+        },duration);
+        document.body.appendChild(el);
+        }
+    window.onload = function () {
+        tempAlert("please hit full screen for full experience!",2000);
+        var canvas = document.getElementById('matrix-container');
+        var ctx = canvas.getContext('2d');
+        var width = 768;
+        var height = 1024;
+        var fontSize = 12;
+        var columns = Math.floor(width / fontSize);
+        var rows = Math.floor(height / fontSize);
+        var matrix_dict = new Array(columns).fill(0).map(() => {
+            offset=Math.floor(Math.random()*rows)
+            return {
+                y_offset_max:offset, //  tiefste mögliche y-position, bzw , max anzahl an buchstaben per row
+                y_offset:0,  // Position des am höchsten Liegender Buchstabe in der Zeile
+                y_speed:0+Math.floor(Math.random()*3), // die frequenz zur updaten der y-position in frames per second, zb F=5frames
+                y_offset_iterator:0, // der iterator für die zeit bis zum updaten der y_position
+                repspawn_speed: Math.floor(Math.random()*10), // die zeit bis nach dem kompletten auslöschen der spalte ein neues zeilenobjekt populiert wird
+                respawn_iterator:0, // der iterator bis zum neuspawnen der spalte  nach vollständigem durchlauf
+                fully_visible:false,  // könnte benutzt werden um zu checken ob der respawn_iterator inkrementiert werden soll
+                letters:new Array(rows).fill(0).map(() => { 
+                    return  {
+                            char: String.fromCharCode(Math.floor(Math.random() * 128)), // der aktuelle Buchstabe der xy koordinate
+                            time: 0, // der iterator zum updaten des chars
+                            speed: 2+Math.floor(Math.random()*5), // die zeit bis zum updaten des chars in frames per second
+                            color: '#'+Math.floor(Math.random()*16777215).toString(16),
+                            alpha: 1
+                        }  
+                    })
+                }
+        })
+
+        function render(matrix) {
+            ctx.clearRect(0, 0, width, height);
+            matrix.letters.forEach((col, columnIndex) => {
+               // console.log(col)
+                col.forEach((letter, rowIndex) => {
+                    ctx.fillStyle = matrix.colors[columnIndex][rowIndex % matrix.colors[columnIndex].length]; 
+                    ctx.fillText(letter, columnIndex * fontSize,  rowIndex * fontSize);
+                    ctx.fillStyle = matrix.colors[columnIndex][rowIndex % matrix.colors[columnIndex].length];
+                    ctx.shadowColor = 'rgba(1, 1, 0, 0.5)'; // Schattenfarbe
+                    ctx.shadowBlur = 5; // Schatten-Blur-Effekt
+                    ctx.shadowOffsetX = 2; // Schatten-Offset in x-Richtung
+                    ctx.shadowOffsetY = 2; // Schatten-Offset in y-Richtung
+
+                    //ctx.fillText(text, columnIndex * fontSize, 0);
+                });
+        });
+        ctx.font = fontSize + 'px monospace';
+        ctx.textAlign = 'left';
+        }
+    function calc() {
+        var letters = new Array(columns).fill([]);
+        var colors = new Array(columns).fill([]);
+        var alphas = new Array(columns).fill([]);
+        matrix_dict.forEach((col, columnIndex) => {
+            col.y_offset_iterator++;
+            if (col.y_offset_iterator >= col.y_speed) {
+                col.y_offset++;
+                col.y_offset_iterator = 0;
+            }
+            if (col.y_offset >= col.y_offset_max) {
+                ofset=Math.floor(Math.random()*rows)
+                col.y_offset_max= ofset
+                col.y_offset = 0;
+                col.fully_visible = false;
+                col.respawn_iterator++;
+                if (col.respawn_iterator >= col.repspawn_speed) {
+                    col.letters = new Array(rows).fill(0).map(() => {
+                    return {
+                        char: String.fromCharCode(Math.floor(Math.random() * 128)),
+                        time: 0,
+                        speed: 0+Math.floor(Math.random() * 15)
+                    }
+                    });
+                    col.respawn_iterator = 0;
+                }
+            }
+            else{
+                var row_array = new Array(col.y_offset).fill(' ');
+                var color_array = new Array(col.y_offset).fill('fff');
+                var alpha_array = new Array(col.y_offset).fill(0);
+                col.letters.forEach((letter, rowIndex) => {
+                    not_yet_visible=rowIndex >= col.y_offset  && col.fully_visible==false
+                    if (rowIndex+col.y_offset >= col.y_offset_max || not_yet_visible) {
+                        row_array.push("");
+                        color_array.push("fff");
+                        alpha_array.push(0);
+                        if (rowIndex == col.y_offset && col.y_offset == col.y_offset_max && col.fully_visible == false) {
+                            col.fully_visible = true;
+                        }
+                    }
+                    else{
+                        letter.time++;
+                        if (letter.time >= letter.speed) {
+                            letter.char = String.fromCharCode(Math.floor(Math.random() * 128));
+                            letter.time = 0;
+                            letter.speed=1+Math.floor(Math.random()*(50-col.y_speed))
+                        }
+                        row_array.push(letter.char);
+                        color_array.push(letter.color);
+                        alpha_array.push(letter.alpha);
+                    }
+            });
+            letters[columnIndex] = row_array;
+            colors[columnIndex] = color_array;
+            alphas[columnIndex] = alpha_array;
+           }
+        });
+        return {
+        letters:letters,
+        colors:colors,
+        alphas:alphas}
+        }
+        function animate() {
+            var results = calc();
+            //console.log(results);
+            render(results);
+            setTimeout(animate, 100 / 60);
+        }
+        animate();
+    }
+</script>
+</div>
